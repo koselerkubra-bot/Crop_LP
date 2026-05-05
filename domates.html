@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domates Koruma Çözümleri | Syngenta Türkiye</title>
+    <meta name="description" content="Syngenta Türkiye domates bitki koruma ürünleri. Fungisit, insektisit ve herbisit çözümleri ile sera ve tarla domateslerinizi koruyun.">
+    <link rel="icon" href="https://www.syngenta.com.tr/themes/flavor/favicons/favicon-16x16.png" type="image/png">
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
+
+    <script type="text/babel">
+const { useState } = React;
+
+const CROPS = [
+  { id: "zeytin", label: "Zeytin", active: false },
+  { id: "bugday", label: "Buğday", active: false },
+  { id: "misir", label: "Mısır", active: false },
+  { id: "pamuk", label: "Pamuk", active: false },
+  { id: "domates", label: "Domates", active: true },
+  { id: "bag", label: "Bağ", active: false },
+  { id: "patates", label: "Patates", active: false },
+  { id: "aycicegi", label: "Ayçiçeği", active: false },
+  { id: "findik", label: "Fındık", active: false },
+  { id: "celtik", label: "Çeltik", active: false },
+  { id: "biber", label: "Biber", active: false },
+  { id: "sekerpancari", label: "Şekerpancarı", active: false },
+  { id: "elma", label: "Elma", active: false },
+  { id: "arpa", label: "Arpa", active: false }
+];
+
+const PRODUCTS = {
+  fungisit: [
+    {
+      name: "AMPEXIO",
+      formulation: "WG",
+      activeIngredient: "%25 Mandipropamid + %24 Zoxamide",
+      targets: [
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "60 g/100 L su", phi: "3 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "APRIN XL 350 ES",
+      formulation: "ES",
+      activeIngredient: "350 g/l Metalaxyl-m",
+      targets: [
+        { pest: "Fide Kök Çürüklüğü", latin: "Phythium spp.", dose: "100 ml/100 kg tohuma", phi: "—" }
+      ],
+      badge: "Fungisit"
+    },
+    {
+      name: "BION MX 44 WG ",
+      formulation: "WG",
+      activeIngredient: "%40 Metalaxyl-m + %4 Acibenzolar-s-methyl",
+      targets: [
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "30 g/ da", phi: "7 GÜN" },
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "30 g / 100 L su", phi: "7 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "CARIAL 43 WG",
+      formulation: "WG",
+      activeIngredient: "%25 Mandipropamid + %18 Cymoxanil",
+      targets: [
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "60 g/da", phi: "1 GÜN" },
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "60 g/100 L su", phi: "3 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "DYNASTY CST 125 FS ",
+      formulation: "FS",
+      activeIngredient: "75 g/l Azoxystrobin + 37,5 Metalaxyl-m + 12,5 g/l Fludioxonil",
+      targets: [
+        { pest: "TOPRAK KÖKENLİ PATOJENLER", latin: "Fusarium spp.", dose: "250 ml/da (Damlama sulama)", phi: "28 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "HAGAX",
+      formulation: "WG",
+      activeIngredient: "%14 Metalik bakıra eşdeğer bakır hidroksit + %14 Metalik bakıra eşdeğer bakır oksiklorid",
+      targets: [
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "225 g/da", phi: "3 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "MAXİM 480 FS",
+      formulation: "FS",
+      activeIngredient: "480 g/l Fludioxonil",
+      targets: [
+        { pest: "Sebze fidelerinde çökerten ve kök çürüklüğü", latin: "Fusarium solani, Rhizoctonia solani", dose: "100 ml/100 kg tohuma", phi: "—" }
+      ],
+      badge: "Fungisit"
+    },
+    {
+      name: "MAXİM XL 035 FS",
+      formulation: "FS",
+      activeIngredient: "25 g/l Fludioxonil + 10 g/l Metalaxyl-m",
+      targets: [
+        { pest: "Sebze fidelerinde çökerten ve kök çürüklüğü", latin: "Fusarium spp., Pythium spp., Rhizoctonia spp., .", dose: "10ml/metrekare 4 litre su", phi: "14 GÜN" },
+        { pest: "KÖK BOĞAZI ÇÜRÜKLÜĞÜ", latin: "Fusarium oxysporum", dose: "500 ml/da Damlama sulama ile", phi: "10 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "ORONDIS",
+      formulation: "SC",
+      activeIngredient: "155 g/l Azoxystrobin + 15 g/l Oxathiapiprolin",
+      targets: [
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "100 ml/100 l su", phi: "1 GÜN" },
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "100 ml /da", phi: "1 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "QUADRİS ",
+      formulation: "SC",
+      activeIngredient: "250 g/l Azoxystrobin ",
+      targets: [
+        { pest: "Erken yaprak yanıklığı", latin: "Alternaria solani", dose: "75 ml/100 L su", phi: "3 GÜN" },
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "75 ml/100 L su", phi: "3 GÜN" }
+      ],
+      badge: "Fungisit"
+    },
+    {
+      name: "QUADRİS MAXX",
+      formulation: "SC",
+      activeIngredient: "200 g/l Azoxystrobin + 125 g/l Difenoconazole",
+      targets: [
+        { pest: "Erken yaprak yanıklığı", latin: "Alternaria solani", dose: "60 ml / da", phi: "3 GÜN" },
+        { pest: "Septorya yaprak lekesi", latin: "Septoria lycopersici", dose: "60 ml / da", phi: "3 GÜN" },
+        { pest: "Yaprak küfü", latin: "Cladosporium fulvum", dose: "60 ml / da", phi: "3 GÜN" },
+        { pest: "Patlıcangillerde külleme", latin: "Leveillula taurica", dose: "100 ml /100 lt su", phi: "3 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "REGALIA",
+      formulation: "SC",
+      activeIngredient: "224,6 g/l Reynoutria spp. ekstraktı",
+      targets: [
+        { pest: "Kurşuni küf", latin: "Botrytis cinerea", dose: "125ml/100l su", phi: "—" },
+        { pest: "Patlıcangillerde külleme", latin: "Leveillula taurica", dose: "200ml/100l su", phi: "—" }
+      ],
+      badge: "Fungisit"
+    },
+    {
+      name: "REVUS 250 SC",
+      formulation: "SC",
+      activeIngredient: "250 g/l Mandipropamid",
+      targets: [
+        { pest: "Erken yaprak yanıklığı", latin: "Alternaria solani", dose: "80 ml /100 L su", phi: "3 GÜN" }
+      ],
+      badge: "Fungisit"
+    },
+    {
+      name: "REVUS PRO",
+      formulation: "SC",
+      activeIngredient: "250 g/l Difenoconazole + 250 g/l Mandipropamid",
+      targets: [
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "60 ml /da", phi: "3 GÜN" },
+        { pest: "Erken yaprak yanıklığı", latin: "Alternaria solani", dose: "60 ml /da", phi: "3 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "SWITCH 62.5 WG",
+      formulation: "WG",
+      activeIngredient: "%37,5 Cyprodinil + %25 Fludioxonil",
+      targets: [
+        { pest: "Kurşuni küf", latin: "Botrytis cinerea", dose: "60g/100l su", phi: "7 GÜN " }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "TOPAS 100 EC",
+      formulation: "EC",
+      activeIngredient: "100 g/l Penconazole",
+      targets: [
+        { pest: "Patlıcangillerde külleme", latin: "Leveillula taurica", dose: "50 ml / 100 L su ", phi: "7 GÜN" },
+        { pest: "Patlıcangillerde Külleme", latin: "Leveillula taurica, Oidium lycopersici, Oidium neolycopersici", dose: "50 ml / 100 L su ", phi: "7 GÜN" }
+      ],
+      badge: "Fungisit"
+    },
+    {
+      name: "ZZ-CUPROCOL",
+      formulation: "SC",
+      activeIngredient: "700 g/l Metalik bakıra eşdeğer bakır oksiklorid",
+      targets: [
+        { pest: "Erken yaprak yanıklığı", latin: "Alternaria solani", dose: "175 ml / 100 lt su", phi: "14 GÜN" },
+        { pest: "Mildiyö", latin: "Phytophthora infestans", dose: "200 ml / 100 lt su", phi: "14 GÜN" }
+      ],
+      badge: "Bakır Bazlı"
+    }
+  ],
+  insektisit: [
+    {
+      name: "AGRIMEC EC ",
+      formulation: "EC",
+      activeIngredient: "18 g/l Abamectin",
+      targets: [
+        { pest: "İki noktalı kırmızıörümcek", latin: "Tetranychus urticae", dose: "25 ml/da", phi: "10 GÜN" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "AMPLİGO 150 ZC ",
+      formulation: "ZC",
+      activeIngredient: "100 g/l Chlorantraniliprole + 50 g/l Lambda-cyhalothrin",
+      targets: [
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "40 ml/da\n\n(Larva)", phi: "3 GÜN" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "IMPERATOR 25 EC",
+      formulation: "EC",
+      activeIngredient: "250 g/l Cypermethrin",
+      targets: [
+        { pest: "Tütün beyazsineği", latin: "Bemisia tabaci", dose: "30 ml da larva-ergin", phi: "7 GÜN" },
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "30 ml da larva", phi: "7 GÜN" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "KARATE ZEON",
+      formulation: "CS",
+      activeIngredient: "50 g/l Lambda-cyhalothrin",
+      targets: [
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "50 ml /da larva", phi: "3 GÜN" }
+      ],
+      badge: "Hızlı Etki"
+    },
+    {
+      name: "NEMATHORIN 10 G",
+      formulation: "GR",
+      activeIngredient: "%10 Fosthiazate",
+      targets: [
+        { pest: "KÖK UR NEMATODLARI", latin: "Meloidogyne spp.", dose: "4 kg/da  (Fide dikiminden hemen önce veya 1-2 gün önce uygulanır)", phi: "—" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "NEMATHORIN 150 EC ",
+      formulation: "EC",
+      activeIngredient: "150 g/l Fosthiazate",
+      targets: [
+        { pest: "KÖK UR NEMATODLARI", latin: "Meloidogyne spp.", dose: "1L/ da (Fide Dikiminden 3-6 Gün Önce ,damlama Sulama Şeklinde)", phi: "—" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "NİNJA 5 EC",
+      formulation: "EC",
+      activeIngredient: "50 g/l Lambda-cyhalothrin",
+      targets: [
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "50 ml /da larva", phi: "3 GÜN" }
+      ],
+      badge: "Hızlı Etki"
+    },
+    {
+      name: "PROCLAIM 05 SG",
+      formulation: "SG",
+      activeIngredient: "%5 Emamectin benzoate",
+      targets: [
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "30 g/100 L. su (Larva)", phi: "7 GÜN" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "PROCLAİM OPTİ UV 05 WG",
+      formulation: "WG",
+      activeIngredient: "%5 Emamectin benzoate",
+      targets: [
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "30 g/100 L. su (Larva)", phi: "7 GÜN" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "TERVIGO 20 SC",
+      formulation: "SC",
+      activeIngredient: "20 g/l Abamectin",
+      targets: [
+        { pest: "KÖK UR NEMATODLARI", latin: "Meloidogyne spp.", dose: "400 ml/da", phi: "—" },
+        { pest: "KÖK UR NEMATODLARI", latin: "Meloidogyne spp.", dose: "200 ml/da", phi: "3 GÜN" }
+      ],
+      badge: "İnsektisit"
+    },
+    {
+      name: "VOLIAM TARGO 063 SC",
+      formulation: "SC",
+      activeIngredient: "45 g/l Chlorantraniliprole + 18 g/l Abamectin",
+      targets: [
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "90 ml/da", phi: "10 GÜN" },
+        { pest: "Yaprak galerisineği", latin: "Liriomyza trifolii", dose: "80 ml/100 l su", phi: "10 GÜN" },
+        { pest: "Domates güvesi", latin: "Tuta absoluta", dose: "80 ml/da", phi: "10 GÜN" },
+        { pest: "Yeşilkurt", latin: "Helicoverpa armigera", dose: "90 ml/100 l su", phi: "10 GÜN" },
+        { pest: "Domates güvesi", latin: "Tuta absoluta", dose: "80 ml/100 l su", phi: "10 GÜN" }
+      ],
+      badge: "Çift Etken"
+    }
+  ],
+  herbisit: [
+    {
+      name: "DEFİ MAXX",
+      formulation: "EC",
+      activeIngredient: "800 g/l Prosulfocarb + 80 g/l Metribuzin",
+      targets: [
+        { pest: "Kırmızı köklü tilkikuyruğu", latin: "Amaranthus retroflexus", dose: "500 ml/da \n\n(pre-em)\n", phi: "—" },
+        { pest: "Sirken", latin: "Chenopodium album", dose: "500 ml/da \n\n(pre-em)\n", phi: "—" },
+        { pest: "Semizotu", latin: "Portulaca oleracea", dose: "500 ml/da \n\n(pre-em)\n", phi: "—" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "DUAL 960 EC",
+      formulation: "EC",
+      activeIngredient: "960 g/l S-Metolachlor",
+      targets: [
+        { pest: "Topalak", latin: "Cyperus rotundus", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Darıcan", latin: "Echinochloa crus-galli", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Kırmızı köklü tilkikuyruğu", latin: "Amaranthus retroflexus", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Semizotu", latin: "Portulaca oleracea", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Sirken", latin: "Chenopodium album", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Demir dikeni", latin: "Tribulus terrestris", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Şeytan elması", latin: "Datura stramonium", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Domuz pıtrağı", latin: "Xanthium strumarium", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" },
+        { pest: "Köpek üzümü", latin: "Solanum nigrum", dose: "140 ml/da \n\nFide Dikim öncesi (Toprağa karıştırılarak)", phi: "—" }
+      ],
+      badge: "Geniş Spektrum"
+    },
+    {
+      name: "DUAL S GOLD 915 EC",
+      formulation: "EC",
+      activeIngredient: "915 g/l S-Metolachlor + 45 g/l Benoxacor (safener)",
+      targets: [
+        { pest: "Horozibiği", latin: "Amaranthus albus", dose: "150 ml/dekar dikim (şaşırtma) öncesi toprağa karıştırılarak", phi: "—" },
+        { pest: "Semizotu", latin: "Portulaca oleracea", dose: "150 ml/dekar dikim (şaşırtma) öncesi toprağa karıştırılarak", phi: "—" },
+        { pest: "Topalak", latin: "Cyperus rotundus", dose: "150 ml/dekar dikim (şaşırtma) öncesi toprağa karıştırılarak", phi: "—" },
+        { pest: "Benekli darıcan", latin: "Echinocloa colonum", dose: "150 ml/dekar dikim (şaşırtma) öncesi toprağa karıştırılarak", phi: "—" },
+        { pest: "Domuz pıtrağı", latin: "Xanthium strumarium", dose: "150 ml/dekar dikim (şaşırtma) öncesi toprağa karıştırılarak", phi: "—" }
+      ],
+      badge: "Çift Etken"
+    },
+    {
+      name: "FUSILADE FORTE",
+      formulation: "EC",
+      activeIngredient: "150 g/l Fluazifop-p-butyl",
+      targets: [
+        { pest: "Darıcan", latin: "Echinochloa crus-galli", dose: "75 ml/da\n\nDarıcanlar 10-12 cm boyda iken", phi: "28 GÜN" }
+      ],
+      badge: "Herbisit"
+    }
+  ]
+};
+
+const CATEGORIES = [
+  { id: "all", label: "Tümü" },
+  { id: "fungisit", label: "Fungisitler", sub: "Hastalık Kontrolü", color: "#E07D24" },
+  { id: "insektisit", label: "İnsektisitler", sub: "Zararlı Kontrolü", color: "#C2185B" },
+  { id: "herbisit", label: "Herbisitler", sub: "Yabancıot Kontrolü", color: "#6B8E23" }
+];
+
+const FAQ_ITEMS = [
+  { q: "Domateste mildiyöye karşı hangi fungisitler etkilidir?", a: `<strong>RIDOMIL GOLD</strong>, <strong>REVUS</strong> ve <strong>QUADRİS MAXX</strong> domates mildiyösüne karşı etkili fungisitlerdir. Koruyucu ve tedavi edici uygulamalar dönüşümlü yapılmalıdır.` },
+  { q: "Sera domateslerinde beyazsinek kontrolü nasıl yapılır?", a: `<strong>ACTARA</strong> ve <strong>EFICO</strong> sera koşullarında beyazsineğe karşı etkilidir. Sarı yapışkan tuzaklarla popülasyon takibi yapılmalı ve eşik değer aşıldığında müdahale edilmelidir.` },
+  { q: "Domateste kurşuni küf (Botrytis) nasıl önlenir?", a: `<strong>SWITCH</strong> kurşuni küfe karşı en etkili ürünlerden biridir. Havalandırma, bitki sıklığının ayarlanması ve yaprak temizliği gibi kültürel önlemler de önemlidir.` },
+  { q: "Tarla ve sera domatesi için ilaçlama stratejileri farklı mıdır?", a: `Evet. Sera koşullarında nem yüksek olduğu için fungal hastalık riski daha fazladır. Tarla domatesinde ise yabancı ot kontrolü ve mildiyö ön plandadır. PHI süreleri ve uygulama dozları da farklılık gösterebilir.` }
+];
+
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --syn-green: #00A14B; --syn-green-dark: #007A3A; --syn-green-deeper: #004D25;
+    --syn-orange: #E07D24; --syn-olive: #6B8E23; --syn-magenta: #C2185B; --syn-cyan: #00A0B0;
+    --syn-bg: #F5F6F8; --syn-white: #FFFFFF; --syn-text: #1B2029; --syn-text-mid: #4A5060;
+    --syn-text-light: #7A8290; --syn-border: #E0E3E8; --radius: 12px; --radius-sm: 6px;
+  }
+  body, .page-root { font-family: 'Noto Sans', -apple-system, sans-serif; background: var(--syn-bg); color: var(--syn-text); -webkit-font-smoothing: antialiased; }
+  .hero { position: relative; min-height: 320px; overflow: hidden; background: url('https://images.unsplash.com/photo-1592921870789-04563d55041c?w=1400&h=500&fit=crop&q=75') center/cover no-repeat; }
+  .hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(105deg, rgba(90,15,15,0.88), rgba(140,22,22,0.65), rgba(190,30,30,0.35), rgba(220,38,38,0.15)); }
+  .hero-inner { position: relative; z-index: 2; max-width: 1140px; margin: 0 auto; padding: 52px 36px 48px; }
+  .hero-breadcrumb { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-bottom: 20px; letter-spacing: 0.4px; font-weight: 500; }
+  .hero-breadcrumb a { color: rgba(255,255,255,0.55); text-decoration: none; }
+  .hero-breadcrumb a:hover { color: #fff; }
+  .hero-breadcrumb span { margin: 0 8px; opacity: 0.5; }
+  .hero h1 { font-size: 44px; font-weight: 800; color: #fff; letter-spacing: -0.8px; line-height: 1.12; margin-bottom: 14px; text-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+  .hero-subtitle { font-size: 16px; color: rgba(255,255,255,0.88); line-height: 1.65; max-width: 520px; font-weight: 400; }
+  .cat-bar { display: flex; width: 100%; }
+  .cat-bar-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 12px; color: #fff; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; border: none; transition: filter 0.2s; position: relative; }
+  .cat-bar-item:hover { filter: brightness(1.12); }
+  .cat-bar-item.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 3px; background: #fff; border-radius: 3px 3px 0 0; }
+  .cat-bar-item .arrow { font-size: 16px; opacity: 0.7; transition: transform 0.2s; }
+  .cat-bar-item:hover .arrow { transform: translateX(3px); }
+  .cat-bar-all { background: var(--syn-green-dark); }
+  .cat-bar-fungisit { background: var(--syn-orange); }
+  .cat-bar-insektisit { background: var(--syn-magenta); }
+  .cat-bar-herbisit { background: var(--syn-olive); }
+  .crop-nav-wrapper { background: var(--syn-white); border-bottom: 1px solid var(--syn-border); position: sticky; top: 0; z-index: 50; }
+  .crop-nav { max-width: 1140px; margin: 0 auto; padding: 10px 36px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .crop-nav-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--syn-text-light); margin-right: 8px; padding: 6px 0; white-space: nowrap; }
+  .crop-chip { display: inline-flex; align-items: center; padding: 6px 14px; font-size: 13px; font-weight: 500; color: var(--syn-text-mid); background: transparent; border: 1.5px solid var(--syn-border); border-radius: 100px; cursor: pointer; transition: all 0.2s; white-space: nowrap; text-decoration: none; }
+  .crop-chip:hover { color: var(--syn-green-dark); border-color: var(--syn-green); background: rgba(0,161,75,0.05); }
+  .crop-chip.active { color: #fff; background: var(--syn-green-dark); border-color: var(--syn-green-dark); font-weight: 600; }
+  .main-container { max-width: 1140px; margin: 0 auto; padding: 36px; }
+  .info-banner-link { text-decoration: none; display: block; margin-bottom: 36px; }
+  .info-banner { background: var(--syn-white); border: 1px solid var(--syn-border); border-left: 4px solid var(--syn-orange); border-radius: var(--radius-sm); padding: 24px 28px; display: flex; align-items: center; gap: 20px; transition: box-shadow 0.2s; margin-bottom: 36px; }
+  .info-banner:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .info-banner-icon { font-size: 32px; flex-shrink: 0; }
+  .info-banner-text h3 { font-size: 15px; font-weight: 700; color: var(--syn-text); margin-bottom: 4px; }
+  .info-banner-text p { font-size: 13.5px; color: var(--syn-text-mid); line-height: 1.55; }
+  .info-banner-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--syn-green-dark); }
+  .info-banner:hover .info-banner-cta { text-decoration: underline; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--syn-border); }
+  .section-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .section-title { font-size: 18px; font-weight: 700; }
+  .section-count { font-size: 12px; color: var(--syn-text-light); font-weight: 500; background: var(--syn-bg); padding: 2px 10px; border-radius: 100px; margin-left: auto; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-bottom: 44px; }
+  .product-card { background: var(--syn-white); border-radius: var(--radius); border: 1px solid var(--syn-border); overflow: hidden; transition: all 0.25s; animation: cardIn 0.45s ease-out both; }
+  .product-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.07); transform: translateY(-2px); border-color: #ccc; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .card-top { height: 4px; }
+  .card-header { padding: 20px 22px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .card-name { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+  .card-form-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #F0F1F3; color: var(--syn-text-light); letter-spacing: 0.6px; flex-shrink: 0; }
+  .card-badge { display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 700; padding: 2px 10px; border-radius: 100px; color: #fff; letter-spacing: 0.3px; text-transform: uppercase; }
+  .card-ai-row { padding: 10px 22px 0; font-size: 12px; color: var(--syn-text-mid); line-height: 1.5; }
+  .card-ai-row strong { color: var(--syn-text); font-weight: 600; }
+  .card-targets { padding: 14px 22px 18px; }
+  .target-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; padding: 7px 0; border-bottom: 1px solid #F2F3F5; align-items: center; font-size: 13px; }
+  .target-row:last-child { border-bottom: none; }
+  .target-pest { font-weight: 600; color: var(--syn-text); line-height: 1.3; }
+  .target-latin { font-style: italic; font-size: 10.5px; color: #9BA0AA; display: block; margin-top: 1px; }
+  .target-dose { font-size: 11.5px; font-weight: 600; color: var(--syn-text); background: #F5F6F8; padding: 3px 9px; border-radius: 5px; white-space: nowrap; }
+  .target-phi { font-size: 11px; color: var(--syn-text-light); white-space: nowrap; min-width: 44px; text-align: right; }
+  .expand-btn { display: inline-flex; align-items: center; gap: 4px; padding: 0 22px 14px; font-size: 12px; color: var(--syn-green-dark); font-weight: 600; border: none; background: none; cursor: pointer; }
+  .expand-btn:hover { text-decoration: underline; }
+  .faq-section { margin-top: 12px; margin-bottom: 8px; }
+  .faq-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--syn-border); }
+  .faq-header h2 { font-size: 18px; font-weight: 700; }
+  .faq-list { display: flex; flex-direction: column; gap: 6px; }
+  .faq-item { background: var(--syn-white); border: 1px solid var(--syn-border); border-radius: var(--radius-sm); overflow: hidden; transition: border-color 0.2s; }
+  .faq-item.open { border-color: var(--syn-green); }
+  .faq-q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 22px; font-size: 14px; font-weight: 600; color: var(--syn-text); background: none; border: none; cursor: pointer; text-align: left; line-height: 1.45; transition: background 0.15s; }
+  .faq-q:hover { background: var(--syn-bg); }
+  .faq-chevron { flex-shrink: 0; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--syn-bg); font-size: 10px; color: var(--syn-text-light); transition: transform 0.3s, background 0.2s, color 0.2s; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); background: var(--syn-green); color: #fff; }
+  .faq-a { padding: 0 22px 18px; font-size: 13.5px; color: var(--syn-text-mid); line-height: 1.7; animation: fadeUp 0.25s ease; }
+  .faq-a strong { color: var(--syn-text); }
+  .faq-a ul { margin: 6px 0 4px 16px; padding: 0; }
+  .faq-a li { margin-bottom: 3px; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .page-footer { background: var(--syn-green-deeper); padding: 28px 36px; text-align: center; color: rgba(255,255,255,0.45); font-size: 12.5px; line-height: 1.6; }
+  .page-footer strong { color: rgba(255,255,255,0.75); }
+  @media (max-width: 768px) {
+    .hero-inner { padding: 36px 20px 32px; }
+    .hero h1 { font-size: 30px; }
+    .main-container { padding: 24px 16px; }
+    .products-grid { grid-template-columns: 1fr; }
+    .crop-nav { padding: 8px 12px; gap: 5px; }
+    .crop-chip { padding: 5px 10px; font-size: 12px; }
+    .crop-nav-label { display: none; }
+    .cat-bar-item { font-size: 11px; padding: 12px 6px; letter-spacing: 0.2px; }
+    .info-banner { flex-direction: column; text-align: center; padding: 18px; }
+    .target-row { grid-template-columns: 1fr; gap: 3px; }
+    .target-dose, .target-phi { justify-self: start; }
+    .faq-q { padding: 13px 16px; font-size: 13px; }
+    .faq-a { padding: 0 16px 14px; font-size: 13px; }
+  }
+`;
+
+function ProductCard({ product, index, catColor }) {
+  const [expanded, setExpanded] = useState(false);
+  const maxShow = 3;
+  const hasMore = product.targets.length > maxShow;
+  const visible = expanded ? product.targets : product.targets.slice(0, maxShow);
+  return (
+    <div className="product-card" style={{ animationDelay: `${index * 70}ms` }}>
+      <div className="card-top" style={{ background: catColor }} />
+      <div className="card-header">
+        <div>
+          <div className="card-name">{product.name}</div>
+          <span className="card-badge" style={{ background: catColor }}>{product.badge}</span>
+        </div>
+        <span className="card-form-tag">{product.formulation}</span>
+      </div>
+      <div className="card-ai-row"><strong>Aktif Madde: </strong>{product.activeIngredient}</div>
+      <div className="card-targets">
+        {visible.map((t, i) => (
+          <div className="target-row" key={i}>
+            <div><span className="target-pest">{t.pest}</span>{t.latin && <span className="target-latin">{t.latin}</span>}</div>
+            <span className="target-dose">{t.dose}</span>
+            <span className="target-phi">⏱ {t.phi}</span>
+          </div>
+        ))}
+      </div>
+      {hasMore && <button className="expand-btn" onClick={() => setExpanded(!expanded)}>{expanded ? "▲ Daha az" : `▼ +${product.targets.length - maxShow} hedef daha`}</button>}
+    </div>
+  );
+}
+
+function ProductSection({ catId, catLabel, catColor, products }) {
+  if (!products || products.length === 0) return null;
+  return (
+    <div>
+      <div className="section-header">
+        <div className="section-dot" style={{ background: catColor }} />
+        <h2 className="section-title">{catLabel}</h2>
+        <span className="section-count">{products.length} ürün</span>
+      </div>
+      <div className="products-grid">
+        {products.map((p, i) => <ProductCard key={p.name} product={p} index={i} catColor={catColor} />)}
+      </div>
+    </div>
+  );
+}
+
+function FAQSection() {
+  const [openIdx, setOpenIdx] = useState(null);
+  return (
+    <div className="faq-section">
+      <div className="faq-header">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#007A3A"/><text x="10" y="14.5" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">?</text></svg>
+        <h2>Sıkça Sorulan Sorular</h2>
+      </div>
+      <div className="faq-list">
+        {FAQ_ITEMS.map((item, i) => (
+          <div key={i} className={`faq-item ${openIdx === i ? "open" : ""}`}>
+            <button className="faq-q" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
+              <span>{item.q}</span>
+              <span className="faq-chevron">▼</span>
+            </button>
+            {openIdx === i && <div className="faq-a" dangerouslySetInnerHTML={{ __html: item.a }} />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SyngentaTRProducts() {
+  const [activeCat, setActiveCat] = useState("all");
+  return (
+    <div className="page-root">
+      <style>{styles}</style>
+      <div className="hero">
+        <div className="hero-inner">
+          <div className="hero-breadcrumb">
+            <a href="#">Syngenta Türkiye</a><span>›</span><a href="#">Ürünler</a><span>›</span>Domates
+          </div>
+          <h1>Domates Koruma<br/>Çözümleri</h1>
+          <p className="hero-subtitle">Sera ve tarla domateslerinizi hastalık ve zararlılara karşı koruyun. Syngenta'nın geniş fungisit ve insektisit portföyüyle kaliteli hasat.</p>
+        </div>
+      </div>
+      <div className="cat-bar">
+        <button
+          className={`cat-bar-item cat-bar-all ${activeCat === "all" ? "active" : ""}`}
+          onClick={() => setActiveCat("all")}
+        >
+          Tüm Ürünler <span className="arrow">→</span>
+        </button>
+        <button
+          className={`cat-bar-item cat-bar-fungisit ${activeCat === "fungisit" ? "active" : ""}`}
+          onClick={() => setActiveCat("fungisit")}
+        >
+          Fungisitler <span className="arrow">→</span>
+        </button>
+        <button
+          className={`cat-bar-item cat-bar-insektisit ${activeCat === "insektisit" ? "active" : ""}`}
+          onClick={() => setActiveCat("insektisit")}
+        >
+          İnsektisitler <span className="arrow">→</span>
+        </button>
+        <button
+          className={`cat-bar-item cat-bar-herbisit ${activeCat === "herbisit" ? "active" : ""}`}
+          onClick={() => setActiveCat("herbisit")}
+        >
+          Herbisitler <span className="arrow">→</span>
+        </button>
+      </div>
+      <div className="crop-nav-wrapper">
+        <nav className="crop-nav">
+          <span className="crop-nav-label">Kültürler</span>
+          {CROPS.map(c => <button key={c.id} className={`crop-chip ${c.active ? "active" : ""}`}>{c.label}</button>)}
+        </nav>
+      </div>
+      <div className="main-container">
+        <a href="https://www.syngenta.com.tr/domates-ilaclama-programi" target="_blank" rel="noopener noreferrer" className="info-banner-link">
+          <div className="info-banner">
+            <div className="info-banner-icon">📋</div>
+            <div className="info-banner-text">
+              <h3>Domates İlaçlama Programı</h3>
+              <p>Domateste mildiyö, kurşuni küf ve yaprak küfü en yaygın hastalıklardır. Sera ve tarla koşullarına göre farklı ilaçlama stratejileri uygulanmalıdır.</p>
+              <span className="info-banner-cta">Programı İncele →</span>
+            </div>
+          </div>
+        </a>
+        {activeCat === "all" ? (
+          <>
+            <ProductSection catId="fungisit" catLabel="Fungisitler — Hastalık Kontrolü" catColor="#E07D24" products={PRODUCTS.fungisit} />
+            <ProductSection catId="insektisit" catLabel="İnsektisitler — Zararlı Kontrolü" catColor="#C2185B" products={PRODUCTS.insektisit} />
+            <ProductSection catId="herbisit" catLabel="Herbisitler — Yabancıot Kontrolü" catColor="#6B8E23" products={PRODUCTS.herbisit} />
+          </>
+        ) : (
+          <ProductSection
+            catId={activeCat}
+            catLabel={CATEGORIES.find(c => c.id === activeCat)?.label}
+            catColor={CATEGORIES.find(c => c.id === activeCat)?.color}
+            products={PRODUCTS[activeCat]}
+          />
+        )}
+        <FAQSection />
+      </div>
+      <div className="page-footer">
+        <strong>Syngenta Türkiye</strong> · Bitki Koruma Ürünleri<br/>Ürün kullanımından önce mutlaka etiket bilgilerini okuyunuz.
+      </div>
+    </div>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(<SyngentaTRProducts />);
+    </script>
+</body>
+</html>
